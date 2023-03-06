@@ -1,0 +1,26 @@
+# nodejs
+node_modules
+
+# vscode
+.vscode
+
+# public
+/public/
+
+# nextjs
+packages/renderer/out
+packages/renderer/.next
+packages/renderer/next-env.d.ts
+packages/renderer/next.config.js
+
+# pc
+.DS_Store
+
+#config
+.eslintrc.js
+
+# build
+buildResources
+dist
+
+packages/preload/exposedInMain.d.ts

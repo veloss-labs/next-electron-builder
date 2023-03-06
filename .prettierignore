@@ -1,0 +1,14 @@
+**/node_modules
+**/dist
+**/*.svg
+
+package.json
+package-lock.json
+.electron-vendors.cache.json
+
+.github
+.idea
+
+packages/renderer/out
+packages/renderer/.next
+packages/renderer/next-env.d.ts
