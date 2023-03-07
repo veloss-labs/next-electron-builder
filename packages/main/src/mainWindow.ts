@@ -35,7 +35,7 @@ async function createWindow() {
    * Start Next.js With Custom Express Server
    */
   const {url} = await server.run({
-    rendererDir: join(app.getAppPath(), 'packages/renderer/out'),
+    rendererDir: join(app.getAppPath(), import.meta.env.VITE_RENDERER_DIR),
   });
 
   /**

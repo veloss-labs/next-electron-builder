@@ -20,6 +20,12 @@ interface ImportMetaEnv {
 
   readonly VITE_SERVER_PORT: string;
 
+  readonly VITE_COOKIE_SECRET: string;
+
+  readonly VITE_RENDERER_DIR: string;
+
+  readonly VITE_LOG_LEVEL: string;
+
   /** Current app version */
   readonly VITE_APP_VERSION: string;
 }
