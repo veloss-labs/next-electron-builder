@@ -1,7 +1,6 @@
 import handler from 'serve-handler';
 import express, {type Express} from 'express';
 import getPort from 'get-port';
-import {ipcMain} from 'electron';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
@@ -32,7 +31,21 @@ export class Server {
 
   private url: URL | undefined;
 
-  private rendererInitialized = false;
+  getUrl() {
+    return this.url;
+  }
+
+  getHost() {
+    return this.host;
+  }
+
+  getServerPort() {
+    return this.serverPort;
+  }
+
+  getServer() {
+    return this.server;
+  }
 
   async run({rendererDir}: ServerParams) {
     const envPort = import.meta.env.VITE_SERVER_PORT;
@@ -47,15 +60,13 @@ export class Server {
 
     this.staticServe({app, rendererDir});
 
-    this.ipcHandlers();
-
-    this.server = app.listen(this.url.port, () => {
-      console.debug(`[App] Server running on port ${this.serverPort}`);
+    this.server = app.listen(this.url?.port, () => {
+      Logger.debug('http', `[App] Server running on port ${this.serverPort}`);
     });
 
     return {
-      server: this.server,
       url: this.url,
+      server: this.server,
     };
   }
 
@@ -141,23 +152,6 @@ export class Server {
 
   routes(app: Express) {
     app.use(router);
-  }
-
-  ipcHandlers() {
-    ipcMain.handle('renderer-ready', () => {
-      if (this.rendererInitialized) return;
-      Logger.debug('ipc', 'Renderer Process is Ready.');
-      this.rendererInitialized = true;
-    });
-
-    ipcMain.handle('get-server-url', () => {
-      Logger.debug('ipc', 'Getting Server URL.');
-      return this.url?.toString();
-    });
-
-    ipcMain.handle('get-server-port', () => {
-      return this.serverPort;
-    });
   }
 
   close() {

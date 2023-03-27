@@ -1,7 +1,7 @@
 import './schema-validation';
 import {app} from 'electron';
 import './security-restrictions';
-import {restoreOrCreateWindow} from '~/mainWindow';
+import {restoreOrCreateWindow} from './main-window';
 import {platform} from 'node:process';
 
 /**
