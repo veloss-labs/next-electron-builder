@@ -16,7 +16,12 @@ module.exports = async function () {
       output: 'dist',
       buildResources: 'buildResources',
     },
-    files: ['packages/**/dist/**', 'packages/**/out/**', 'packages/**/public/**'],
+    files: [
+      'packages/**/dist/**',
+      'packages/**/.next/**',
+      'packages/**/public/**',
+      'packages/loading-renderer/**',
+    ],
     extraMetadata: {
       version: getVersion(),
     },

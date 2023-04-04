@@ -3,8 +3,18 @@ import {join} from 'node:path';
 import {appState} from './app-state';
 import {server} from './server';
 import {electronWindow} from './window';
+import {isFunction} from './utils/assertion';
 
-async function createWindow() {
+interface CreateWindowOptions {
+  beforeCreate?: () => void;
+  afterCreate?: () => void;
+}
+
+async function createWindow(opts?: CreateWindowOptions) {
+  if (opts?.beforeCreate && isFunction(opts.beforeCreate)) {
+    opts.beforeCreate();
+  }
+
   const browserWindow = electronWindow.run();
 
   /**
@@ -27,17 +37,21 @@ async function createWindow() {
 
   await browserWindow.loadURL(pageUrl);
 
+  if (opts?.afterCreate && isFunction(opts.afterCreate)) {
+    opts.afterCreate();
+  }
+
   return browserWindow;
 }
 
 /**
  * Restore an existing BrowserWindow or Create a new BrowserWindow.
  */
-export async function restoreOrCreateWindow() {
+export async function restoreOrCreateWindow(opts?: CreateWindowOptions) {
   let window = BrowserWindow.getAllWindows().find(w => !w.isDestroyed());
 
   if (window === undefined) {
-    window = await createWindow();
+    window = await createWindow(opts);
   }
 
   if (window.isMinimized()) {

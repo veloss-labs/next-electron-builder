@@ -6,6 +6,17 @@ dontenv.config({
   path: path.resolve(__dirname, `../../env/.env.${process.env.NODE_ENV}`),
 });
 
+// You might need to insert additional domains in script-src if you are using external services
+const ContentSecurityPolicy = `
+  default-src 'self';
+  script-src 'self' 'unsafe-eval' 'unsafe-inline';
+  style-src 'self' 'unsafe-inline';
+  img-src * blob: data:;
+  media-src 'none';
+  connect-src *;
+  font-src 'self';
+`;
+
 /**
  * Next Config Options
  * @type {import('next').NextConfig} */
@@ -38,6 +49,11 @@ const nextConfig = {
       {
         source: '/(.*)',
         headers: [
+          // https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
+          {
+            key: 'Content-Security-Policy',
+            value: ContentSecurityPolicy.replace(/\n/g, ''),
+          },
           // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
           {
             key: 'Referrer-Policy',

@@ -40,10 +40,10 @@ const ALLOWED_EXTERNAL_ORIGINS = new Set<`https://${string}`>(['https://github.c
 const ALLOWED_EXTERNAL_ORIGINS_LIST: Array<`https://${string}`> = [
   'https://beta.nextjs.org',
   'https://vercel.com',
-  'https://www.electronjs.org'
-]
+  'https://www.electronjs.org',
+];
 
-ALLOWED_EXTERNAL_ORIGINS_LIST.forEach((origin) => ALLOWED_EXTERNAL_ORIGINS.add(origin))
+ALLOWED_EXTERNAL_ORIGINS_LIST.forEach(origin => ALLOWED_EXTERNAL_ORIGINS.add(origin));
 
 app.on('web-contents-created', (_, contents) => {
   /**

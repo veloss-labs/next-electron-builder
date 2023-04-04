@@ -3,6 +3,7 @@ import {app} from 'electron';
 import './security-restrictions';
 import {restoreOrCreateWindow} from './main-window';
 import {platform} from 'node:process';
+import {electronWindow} from './window';
 
 /**
  * Prevent electron from running multiple instances.
@@ -12,7 +13,7 @@ if (!isSingleInstance) {
   app.quit();
   process.exit(0);
 }
-app.on('second-instance', restoreOrCreateWindow);
+app.on('second-instance', () => restoreOrCreateWindow());
 
 /**
  * Disable Hardware Acceleration to save more system resources.
@@ -31,14 +32,20 @@ app.on('window-all-closed', () => {
 /**
  * @see https://www.electronjs.org/docs/latest/api/app#event-activate-macos Event: 'activate'.
  */
-app.on('activate', restoreOrCreateWindow);
+app.on('activate', () => restoreOrCreateWindow());
 
 /**
  * Create the application window when the background process is ready.
  */
 app
   .whenReady()
-  .then(restoreOrCreateWindow)
+  .then(() =>
+    restoreOrCreateWindow({
+      beforeCreate: () => {
+        electronWindow.setupLoading();
+      },
+    }),
+  )
   .catch(e => console.error('Failed create window:', e));
 
 /**

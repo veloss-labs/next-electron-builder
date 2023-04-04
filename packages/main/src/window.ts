@@ -4,8 +4,42 @@ import {app, BrowserWindow} from 'electron';
 export class ElectronWindow {
   browserWindow: BrowserWindow | undefined;
 
+  loadingWindow: BrowserWindow | undefined;
+
+  init = false;
+
   getBrowserWindow() {
     return this.browserWindow;
+  }
+
+  getloadingWindow() {
+    return this.loadingWindow;
+  }
+
+  setupLoading() {
+    if (!this.init) {
+      this.loadingWindow = new BrowserWindow({
+        show: false,
+        width: 400,
+        height: 400,
+        closable: false,
+        minimizable: false,
+        autoHideMenuBar: true,
+        resizable: false,
+        movable: false,
+        webPreferences: {
+          nodeIntegration: true,
+          contextIsolation: false,
+          webSecurity: false,
+        },
+      });
+
+      this.loadingWindow.loadFile(join(app.getAppPath(), 'packages/loading-renderer/index.html'));
+
+      this.loadingWindow.on('ready-to-show', () => {
+        this.loadingWindow?.show();
+      });
+    }
   }
 
   run() {
@@ -34,6 +68,12 @@ export class ElectronWindow {
      * @see https://github.com/electron/electron/issues/25012 for the afford mentioned issue.
      */
     this.browserWindow.on('ready-to-show', () => {
+      if (this.loadingWindow) {
+        this.loadingWindow.destroy();
+        this.loadingWindow = undefined;
+        this.init = true;
+      }
+
       this.browserWindow?.show();
 
       if (import.meta.env.DEV) {
